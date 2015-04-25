@@ -20,7 +20,7 @@ var running = false;
 var waitInterval = 200;
 var numSteps = 0;
 var VACCINATION_STEP = 10;
-var percentageAlive = 50;
+var percentageAlive = 60;
 
 function Cell(x, y, s)
 {
@@ -208,7 +208,7 @@ function vaccinate()
             vaccinated = true;
         }
 
-        if (i++ == 100)
+        if (i++ == 300)
             break; // don't want to search for too long
     } while (!vaccinated);
 }
@@ -218,7 +218,7 @@ function twoOrMoreNeighbors(cell) {
     if (!outOfBounds(cell.y + 1, cell.x))
     {
         var c = grid.grid[cell.y + 1][cell.x];
-        if (c.state == state.IMMUNE)
+        if (c.state == state.IMMUNE || c.state == state.VACCINATED)
         {
             numImmune++;
         }
@@ -227,7 +227,7 @@ function twoOrMoreNeighbors(cell) {
     if (!outOfBounds(cell.y - 1, cell.x))
     {
         var c = grid.grid[cell.y - 1][cell.x];
-        if (c.state == state.IMMUNE)
+        if (c.state == state.IMMUNE || c.state == state.VACCINATED)
         {
             numImmune++;
         }
@@ -236,7 +236,7 @@ function twoOrMoreNeighbors(cell) {
     if (!outOfBounds(cell.y, cell.x + 1))
     {
         var c = grid.grid[cell.y][cell.x + 1];
-        if (c.state == state.IMMUNE)
+        if (c.state == state.IMMUNE || c.state == state.VACCINATED)
         {
             numImmune++;
         }
@@ -245,7 +245,7 @@ function twoOrMoreNeighbors(cell) {
     if (!outOfBounds(cell.y, cell.x - 1))
     {
         var c = grid.grid[cell.y][cell.x - 1];
-        if (c.state == state.IMMUNE)
+        if (c.state == state.IMMUNE || c.state == state.VACCINATED)
         {
             numImmune++;
         }
