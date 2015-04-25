@@ -20,6 +20,7 @@ var running = false;
 var waitInterval = 200;
 var numSteps = 0;
 var VACCINATION_STEP = 10;
+var percentageAlive = 50;
 
 function Cell(x, y, s)
 {
@@ -67,7 +68,7 @@ function Grid(w, h)
             }
         }
         // immunize 5% of population
-        for (var i = 0; i < Math.floor((w * h) / 2); i++)
+        for (var i = 0; i < Math.floor((w * h) / (100 / percentageAlive)); i++)
         {
             this.grid[Math.floor(Math.random() * h)][Math.floor(Math.random() * w)].state = state.IMMUNE;
         }
@@ -197,15 +198,60 @@ function vaccinate()
 {
     // find an alive cell with an immune cell on either side of it
     var vaccinated = false;
+    var i = 0;
     do {
         var cell = grid.grid[Math.floor(Math.random() * grid.h)][Math.floor(Math.random() * grid.w)];
-        if (cell.state === state.ALIVE)
+        if (twoOrMoreNeighbors(cell) && cell.state === state.ALIVE)
         {
             cell.state = state.VACCINATED;
             cell.draw(context);
             vaccinated = true;
         }
+
+        if (i++ == 100)
+            break; // don't want to search for too long
     } while (!vaccinated);
+}
+
+function twoOrMoreNeighbors(cell) {
+    var numImmune = 0;
+    if (!outOfBounds(cell.y + 1, cell.x))
+    {
+        var c = grid.grid[cell.y + 1][cell.x];
+        if (c.state == state.IMMUNE)
+        {
+            numImmune++;
+        }
+    }
+
+    if (!outOfBounds(cell.y - 1, cell.x))
+    {
+        var c = grid.grid[cell.y - 1][cell.x];
+        if (c.state == state.IMMUNE)
+        {
+            numImmune++;
+        }
+    }
+
+    if (!outOfBounds(cell.y, cell.x + 1))
+    {
+        var c = grid.grid[cell.y][cell.x + 1];
+        if (c.state == state.IMMUNE)
+        {
+            numImmune++;
+        }
+    }
+
+    if (!outOfBounds(cell.y, cell.x - 1))
+    {
+        var c = grid.grid[cell.y][cell.x - 1];
+        if (c.state == state.IMMUNE)
+        {
+            numImmune++;
+        }
+    }
+
+    return numImmune >= 2;
 }
 
 function init()
